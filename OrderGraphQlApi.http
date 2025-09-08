@@ -1,6 +1,0 @@
-@OrderGraphQlApi_HostAddress = http://localhost:5287
-
-GET {{OrderGraphQlApi_HostAddress}}/product/
-Accept: application/json
-
-###
