@@ -4,3 +4,4 @@ bin
 Migrations
 .env
 *.http
+DbInit
