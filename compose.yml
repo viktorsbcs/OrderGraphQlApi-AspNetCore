@@ -8,11 +8,13 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-  
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - db-data:/var/lib/postgresql/data
+      - ./DbInit:/docker-entrypoint-initdb.d
     networks:
       - internal-network
+      - external-network
 
   pgAdmin:
     image: elestio/pgadmin:REL-9_8
@@ -28,12 +30,12 @@ services:
       - external-network
       - internal-network
     volumes:
-      - pgAdmin-data:/pgadmin4/servers.json
+      - pgadmin-data:/var/lib/pgadmin 
     
 
 volumes:
   db-data:
-  pgAdmin-data:
+  pgadmin-data:
 
 networks:
   internal-network:
