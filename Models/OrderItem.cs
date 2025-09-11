@@ -7,5 +7,10 @@ namespace OrderGraphQlApi.Models
 		public int OrderId { get; set; }
 		public int ProductId { get; set; }
 		public int ProductQuantity { get; set; }
+
+		[ForeignKey("OrderId")]
+		public Order? Order { get; set; }
+		[ForeignKey("ProductId")]
+		public Product? Product { get; set; }
 	}
 }
