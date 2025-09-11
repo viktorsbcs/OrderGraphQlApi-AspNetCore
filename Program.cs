@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using OrderGraphQlApi.Context;
 using OrderGraphQlApi.GraphQl;
+using OrderGraphQlApi.GraphQl.Types;
 using System.Data.Common;
 
 namespace OrderGraphQlApi
@@ -12,7 +13,7 @@ namespace OrderGraphQlApi
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
-			builder.Services.AddDbContext<GraphQlDbContext>(options =>
+			builder.Services.AddPooledDbContextFactory<GraphQlDbContext>(options =>
 			{
 				options.UseNpgsql(builder.Configuration["ConnectionStrings:DbConnection"]);
 			});
@@ -20,15 +21,17 @@ namespace OrderGraphQlApi
 			builder.Services
 				.AddGraphQLServer()
 				.AddQueryType<Query>()
-				.AddMutationType<Mutation>();
-
+				.AddMutationType<Mutation>()
+				.AddType<ProductType>()
+				.AddType<CustomerType>()
+				.AddType<OrderType>()
+				.AddType<OrderItemType>()
+				.RegisterDbContextFactory<GraphQlDbContext>()
+				.AddProjections()
+				.AddFiltering()
+				.AddSorting();
+				
 			var app = builder.Build();
-
-			app.MapGet("/products", (IServiceProvider service) =>
-			{
-				var products = service.GetService<GraphQlDbContext>().Products.ToList();
-				return Results.Ok(products);
-			});
 
 			app.MapGraphQL("/graphql");
 			app.Run();
