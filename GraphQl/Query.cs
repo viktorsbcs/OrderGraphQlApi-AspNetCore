@@ -10,33 +10,21 @@ namespace OrderGraphQlApi.GraphQl
 		[UseProjection]
 		[UseFiltering]
 		[UseSorting]
-		public IQueryable<Customer> GetCustomers(GraphQlDbContext dbContext)
-		{
-			return dbContext.Customers;
-		}
+		public IQueryable<Customer> GetCustomers(GraphQlDbContext dbContext) => dbContext.Customers;
 
 		[UseProjection]
 		[UseFiltering]
 		[UseSorting]
-		public IQueryable<Product> GetProducts(GraphQlDbContext dbContext)
-		{
-			return dbContext.Products;
-		}
+		public IQueryable<Product> GetProducts(GraphQlDbContext dbContext) => dbContext.Products;
 
 		[UseProjection]
 		[UseFiltering]
 		[UseSorting]
-		public IQueryable<Order> GetOrders(GraphQlDbContext dbContext)
-		{
-			return dbContext.Orders;
-		}
+		public IQueryable<Order> GetOrders(GraphQlDbContext dbContext) => dbContext.Orders;
 
 		[UseProjection]
 		[UseFiltering]
 		[UseSorting]
-		public IQueryable<OrderItem> GetOrderItems(GraphQlDbContext dbContext)
-		{
-			return dbContext.OrderItems;
-		}
+		public IQueryable<OrderItem> GetOrderItems(GraphQlDbContext dbContext) => dbContext.OrderItems;
 	}
 }
