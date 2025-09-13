@@ -1,9 +1,8 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using OrderGraphQlApi.Context;
 using OrderGraphQlApi.GraphQl;
+using OrderGraphQlApi.GraphQl.Inputs;
 using OrderGraphQlApi.GraphQl.Types;
-using System.Data.Common;
 
 namespace OrderGraphQlApi
 {
@@ -26,11 +25,14 @@ namespace OrderGraphQlApi
 				.AddType<CustomerType>()
 				.AddType<OrderType>()
 				.AddType<OrderItemType>()
+				.AddType<InputObjectType<CustomerInputDto>>()
+				.AddType<InputObjectType<ProductInputDto>>()
+				.AddType<InputObjectType<OrderItemInputDto>>()
 				.RegisterDbContextFactory<GraphQlDbContext>()
 				.AddProjections()
 				.AddFiltering()
 				.AddSorting();
-				
+
 			var app = builder.Build();
 
 			app.MapGraphQL("/graphql");
