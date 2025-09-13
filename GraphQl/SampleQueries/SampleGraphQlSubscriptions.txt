@@ -1,0 +1,23 @@
+subscription {
+  onOrderCreated {
+    id
+    createdAt
+    customer {
+      id
+      firstName
+      lastName
+      email
+    }
+    totalPrice
+    orderItems {
+      productId
+      productQuantity
+      product {
+        id
+        name
+        description
+        price
+      }
+    }
+  }
+}
