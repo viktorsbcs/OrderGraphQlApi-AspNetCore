@@ -2,12 +2,13 @@
 using OrderGraphQlApi.Context;
 using OrderGraphQlApi.GraphQl.Inputs;
 using OrderGraphQlApi.Models;
+using HotChocolate.Subscriptions;
 
 namespace OrderGraphQlApi.GraphQl
 {
 	public class Mutation
 	{
-		public async Task<Customer> AddCustomer(CustomerInputDto customerDto, GraphQlDbContext dbContext)
+		public async Task<Customer> AddCustomer(CustomerInputDto customerDto, GraphQlDbContext dbContext, ITopicEventSender eventSender, CancellationToken cancellationToken)
 		{
 			var customer = new Customer()
 			{
@@ -19,10 +20,13 @@ namespace OrderGraphQlApi.GraphQl
 
 			await dbContext.Customers.AddAsync(customer);
 			await dbContext.SaveChangesAsync();
+
+			await eventSender.SendAsync(nameof(Subscription.OnCustomerAdded), customer, cancellationToken);
+
 			return customer;
 		}
 
-		public async Task<Product> AddProduct(ProductInputDto productDto, GraphQlDbContext dbContext)
+		public async Task<Product> AddProduct(ProductInputDto productDto, GraphQlDbContext dbContext, ITopicEventSender eventSender, CancellationToken cancellationToken)
 		{
 			var product = new Product()
 			{
@@ -34,20 +38,25 @@ namespace OrderGraphQlApi.GraphQl
 
 			await dbContext.AddAsync(product);
 			await dbContext.SaveChangesAsync();
+
+			await eventSender.SendAsync(nameof(Subscription.OnProductAdded), product, cancellationToken);
+
 			return product;
 
 		}
 
-		public async Task<Order> AddOrder(int customerId, List<OrderItemInputDto> orderItemsDto, GraphQlDbContext dbContext)
+		public async Task<Order> AddOrder(int customerId, List<OrderItemInputDto> orderItemsDto, GraphQlDbContext dbContext, ITopicEventSender eventSender, CancellationToken cancellationToken)
 		{
 			await using var transaction = await dbContext.Database.BeginTransactionAsync();
 			try
 			{
-				if (!await dbContext.Customers.AnyAsync(c => c.Id == customerId)) throw new ArgumentException($"{nameof(customerId)}={customerId} not found");
+				var customer = await dbContext.Customers.Where(c => c.Id == customerId).FirstOrDefaultAsync();
+				if (customer is null) throw new ArgumentException($"{nameof(customerId)}={customerId} not found");
 
 				var order = new Order()
 				{
 					CustomerId = customerId,
+					Customer = customer,
 					CreatedAt = DateTime.UtcNow,
 					OrderItems = new List<OrderItem>()
 				};
@@ -81,6 +90,9 @@ namespace OrderGraphQlApi.GraphQl
 				await dbContext.Orders.AddAsync(order);
 				await dbContext.SaveChangesAsync();
 				await transaction.CommitAsync();
+
+				await eventSender.SendAsync(nameof(Subscription.OnOrderCreated), order, cancellationToken);
+
 				return order;
 			}
 			catch
