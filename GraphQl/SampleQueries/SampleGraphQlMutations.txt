@@ -1,0 +1,106 @@
+mutation {
+  addCustomer(customerDto: {
+    firstName: "Jenny"
+    lastName: "Samson"
+    address: "432 North View Avenue"
+    email: "j.samson@example.com"
+  }
+  ) {
+    id firstName
+    lastName address
+    email
+  }
+} 
+
+
+
+mutation {
+  addProduct(
+  productDto: {
+    name: "Gaming mouse pad"
+    description: "Pro gaming mouse pad XL size"
+    price: 3.99
+    quantityInStock: 100
+  }
+  ) {
+    id name
+    price quantityInStock
+    description
+  }
+} 
+
+
+
+mutation {
+  addOrder(
+  customerId: 7
+  orderItemsDto: [
+    {
+      productId: 7,
+      productQuantity: 1
+    },
+    {
+      productId: 6,
+      productQuantity: 2
+    }
+
+  ]
+  ) {
+    id createdAt
+    totalPrice customer
+    {
+      id firstName
+      lastName address
+      email
+    }
+    orderItems {
+      orderId productId
+      productQuantity product
+      {
+        id name
+        description price
+        quantityInStock
+      }
+    }
+
+  }
+} 
+
+
+
+mutation {
+  addOrder(
+  customerId: 12
+  orderItemsDto: [
+    {
+      productId: 1,
+      productQuantity: 1
+    },
+    {
+      productId: 1,
+      productQuantity: 1
+    },
+    {
+      productId: 1,
+      productQuantity: 1
+    },
+  ]
+  ) {
+    id createdAt
+    totalPrice customer
+    {
+      id firstName
+      lastName address
+      email
+    }
+    orderItems {
+      orderId productId
+      productQuantity product
+      {
+        id name
+        description price
+        quantityInStock
+      }
+    }
+  }
+}

@@ -1,0 +1,54 @@
+﻿query {
+  customers {
+    id firstName
+    lastName address
+    email
+  }
+} 
+
+
+query {
+  customers {
+    id firstName
+    lastName address
+    email orders
+    {
+      id totalPrice
+      orderItems {
+        productQuantity product
+        {
+          name description
+          price
+        }
+      }
+    }
+  }
+}
+
+
+
+query {
+  orders {
+    id
+    createdAt
+    totalPrice
+    customer {
+      id
+      firstName
+      lastName
+      address
+      email
+    }
+    orderItems {
+      productId
+      productQuantity
+      product {
+        id
+        name
+        description
+        price
+        quantityInStock
+      }
+    }
+  }
+}
