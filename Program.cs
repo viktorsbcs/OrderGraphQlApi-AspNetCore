@@ -21,6 +21,7 @@ namespace OrderGraphQlApi
 				.AddGraphQLServer()
 				.AddQueryType<Query>()
 				.AddMutationType<Mutation>()
+				.AddSubscriptionType<Subscription>()
 				.AddType<ProductType>()
 				.AddType<CustomerType>()
 				.AddType<OrderType>()
@@ -31,11 +32,16 @@ namespace OrderGraphQlApi
 				.RegisterDbContextFactory<GraphQlDbContext>()
 				.AddProjections()
 				.AddFiltering()
-				.AddSorting();
+				.AddSorting()
+				.AddInMemorySubscriptions();
 
 			var app = builder.Build();
 
 			app.MapGraphQL("/graphql");
+			app.Map("/orders", () =>
+			{
+				return "Ok";
+			});
 			app.Run();
 		}
 	}
